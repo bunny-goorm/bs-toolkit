@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/bs-toolkit.svg?style=flat-square)](https://www.npmjs.com/package/bs-toolkit)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/bs-toolkit.svg?style=flat-square)](https://bundlephobia.com/result?p=bs-toolkit)
-[![license](https://img.shields.io/github/license/yourusername/bs-toolkit.svg?style=flat-square)](https://github.com/bunny-goorm/bs-toolkit/blob/main/LICENSE)
+[![license](https://img.shields.io/github/license/bunny-goorm/bs-toolkit.svg?style=flat-square)](https://github.com/bunny-goorm/bs-toolkit/blob/main/LICENSE)
 
 A lightweight, type-safe debounce and throttle utility library that works in both browser and Node.js environments.
 
