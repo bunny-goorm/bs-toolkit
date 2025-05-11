@@ -1,0 +1,43 @@
+{
+  "name": "bs-toolkit",
+  "version": "1.0.0",
+  "description": "A lightweight, type-safe debounce and throttle utility library for performance optimization",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src --ext .ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "debounce",
+    "throttle",
+    "performance",
+    "optimization",
+    "utility",
+    "typescript"
+  ],
+  "author": "bunny-goorm",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bunny-goorm/bs-toolkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bunny-goorm/bs-toolkit/issues"
+  },
+  "homepage": "https://github.com/bunny-goorm/bs-toolkit#readme",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.17",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
