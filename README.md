@@ -10,6 +10,6 @@ A lightweight, type-safe debounce and throttle utility library that works in bot
 
 ```bash
 npm install bs-toolkit
-# 또는
+# or
 yarn add bs-toolkit
 ```
