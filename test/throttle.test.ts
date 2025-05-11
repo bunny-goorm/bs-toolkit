@@ -1,3 +1,4 @@
+// test/throttle.test.ts
 import { throttle } from '../src/utils/throttle';
 
 describe('throttle', () => {
@@ -41,7 +42,7 @@ describe('throttle', () => {
     // 스로틀 간격 경과
     jest.advanceTimersByTime(1000);
 
-    // 호출됨
+    // 이제 호출되어야 함
     expect(func).toHaveBeenCalledTimes(1);
   });
 

@@ -1,3 +1,4 @@
+// src/utils/throttle.ts
 /**
  * 함수 호출을 일정 시간 간격으로 제한하는 스로틀 함수
  * @param func 스로틀할 함수
@@ -58,8 +59,15 @@ export function throttle<T extends (...args: any[]) => any>(
   function leadingEdge(time: number) {
     lastCallTime = time;
 
+    // 오직 leading이 true일 때만 함수를 호출
     if (leading) {
       return invokeFunc(time);
+    }
+
+    // leading이 false인 경우, 지연된 실행을 위해 타임아웃 설정
+    // 수정: trailing이 true인 경우에만 타임아웃 설정
+    if (trailing) {
+      timeout = setTimeout(() => trailingEdge(Date.now()), wait);
     }
 
     return result;
@@ -85,7 +93,7 @@ export function throttle<T extends (...args: any[]) => any>(
         timeout = setTimeout(() => trailingEdge(Date.now()), wait);
       }
 
-      return invokeFunc(time);
+      return leading ? invokeFunc(time) : result;
     }
 
     if (timeout === null && trailing) {
