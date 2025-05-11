@@ -13,13 +13,13 @@ describe('debounce', () => {
     debouncedFunc();
 
     // 직후에는 아직 호출되지 않음
-    expect(func).not.toBeCalled();
+    expect(func).not.toHaveBeenCalled();
 
     // 타이머 진행
     jest.advanceTimersByTime(1000);
 
     // 한 번만 호출됨
-    expect(func).toBeCalledTimes(1);
+    expect(func).toHaveBeenCalledTimes(1);
   });
 
   test('선행 실행: 첫 번째 호출이 즉시 실행됨', () => {
@@ -30,20 +30,20 @@ describe('debounce', () => {
     debouncedFunc();
 
     // 즉시 호출됨
-    expect(func).toBeCalledTimes(1);
+    expect(func).toHaveBeenCalledTimes(1);
 
     // 추가 호출
     debouncedFunc();
     debouncedFunc();
 
     // 추가 호출 없음
-    expect(func).toBeCalledTimes(1);
+    expect(func).toHaveBeenCalledTimes(1);
 
     // 타이머 진행
     jest.advanceTimersByTime(1000);
 
     // 추가 호출 없음
-    expect(func).toBeCalledTimes(1);
+    expect(func).toHaveBeenCalledTimes(1);
   });
 
   test('cancel: 호출 취소 기능이 작동함', () => {
@@ -54,7 +54,7 @@ describe('debounce', () => {
     debouncedFunc();
 
     // 직후에는 아직 호출되지 않음
-    expect(func).not.toBeCalled();
+    expect(func).not.toHaveBeenCalled();
 
     // 취소
     debouncedFunc.cancel();
@@ -63,6 +63,6 @@ describe('debounce', () => {
     jest.advanceTimersByTime(1000);
 
     // 호출되지 않음
-    expect(func).not.toBeCalled();
+    expect(func).not.toHaveBeenCalled();
   });
 });
