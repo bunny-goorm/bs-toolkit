@@ -15,19 +15,20 @@ yarn add bs-toolkit
 ```
 
 ## Examples
+
 ```js
-import { debounce, throttle } from 'bs-toolkit';
+import { debounce, throttle } from "bs-toolkit";
 
 const onInput = debounce(() => {
-  console.log('Input finalized (debounced)');
+  console.log("Input finalized (debounced)");
 }, 300);
 
-const inputEl = document.getElementById('search-input');
-inputEl?.addEventListener('input', onInput);
+const inputEl = document.getElementById("search-input");
+inputEl?.addEventListener("input", onInput);
 
 const onScroll = throttle(() => {
-  console.log('Scroll event triggered (throttled)');
+  console.log("Scroll event triggered (throttled)");
 }, 500);
 
-window.addEventListener('scroll', onScroll);
+window.addEventListener("scroll", onScroll);
 ```
