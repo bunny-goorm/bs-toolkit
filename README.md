@@ -13,3 +13,21 @@ npm install bs-toolkit
 # or
 yarn add bs-toolkit
 ```
+
+## Examples
+```js
+import { debounce, throttle } from 'bs-toolkit';
+
+const onInput = debounce(() => {
+  console.log('Input finalized (debounced)');
+}, 300);
+
+const inputEl = document.getElementById('search-input');
+inputEl?.addEventListener('input', onInput);
+
+const onScroll = throttle(() => {
+  console.log('Scroll event triggered (throttled)');
+}, 500);
+
+window.addEventListener('scroll', onScroll);
+```
