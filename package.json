@@ -1,6 +1,6 @@
 {
   "name": "bs-toolkit",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A lightweight, type-safe debounce and throttle utility library for performance optimization",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
