@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es2015",
     "module": "commonjs",
+    "moduleResolution": "node",
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
@@ -10,5 +11,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "test"]
+  "exclude": ["node_modules", "dist"]
 }
