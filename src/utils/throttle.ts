@@ -1,10 +1,34 @@
 // src/utils/throttle.ts
 /**
- * 함수 호출을 일정 시간 간격으로 제한하는 스로틀 함수
- * @param func 스로틀할 함수
- * @param wait 대기 시간(밀리초)
- * @param options 스로틀 옵션
- * @returns 스로틀된 함수
+ * Creates a throttled function that only invokes `func` at most once per every `wait` milliseconds.
+ * The throttled function comes with a `cancel` method to cancel delayed `func` invocations.
+ * Subsequent calls to the throttled function return the result of the last `func` invocation.
+ *
+ * @param {(...args: any[]) => any} func - The function to throttle.
+ * @param {number} wait - The number of milliseconds to throttle invocations to.
+ * @param {Object=} options - The options object.
+ * @param {boolean=true} options.leading - Specify invoking on the leading edge of the timeout.
+ * @param {boolean=true} options.trailing - Specify invoking on the trailing edge of the timeout.
+ * @returns {{(...args: any[]) => any, cancel: () => void}} - Returns the new throttled function with cancel method.
+ *
+ * @example
+ * // Basic throttle usage
+ * const throttledScroll = throttle(() => {
+ *   console.log('Scroll event handled');
+ * }, 100);
+ *
+ * window.addEventListener('scroll', throttledScroll);
+ *
+ * // Throttle with options
+ * const throttledResize = throttle(handleResize, 250, {
+ *   leading: false,
+ *   trailing: true
+ * });
+ *
+ * // Cancel the throttled function
+ * const throttled = throttle(myFunction, 1000);
+ * throttled();
+ * throttled.cancel(); // Cancel any pending invocation
  */
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
@@ -23,8 +47,8 @@ export function throttle<T extends (...args: any[]) => any>(
   let result: ReturnType<T>;
   let lastCallTime: number = 0;
 
-  const leading = 'leading' in options ? !!options.leading : true;
-  const trailing = 'trailing' in options ? !!options.trailing : true;
+  const leading = "leading" in options ? !!options.leading : true;
+  const trailing = "trailing" in options ? !!options.trailing : true;
 
   function invokeFunc(time: number) {
     const args = lastArgs!;
