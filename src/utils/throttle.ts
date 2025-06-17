@@ -30,116 +30,27 @@
  * throttled();
  * throttled.cancel(); // Cancel any pending invocation
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number,
-  options: {
-    leading?: boolean; // 첫 번째 호출 즉시 실행 여부
-    trailing?: boolean; // 마지막 호출 실행 여부
-  } = {}
-): {
-  (...args: Parameters<T>): ReturnType<T> | undefined;
-  cancel: () => void;
-} {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-  let lastArgs: Parameters<T> | null = null;
-  let lastContext: any = null;
-  let result: ReturnType<T>;
-  let lastCallTime: number = 0;
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  let lastRun = 0;
 
-  const leading = "leading" in options ? !!options.leading : true;
-  const trailing = "trailing" in options ? !!options.trailing : true;
+  return function (this: unknown, ...args: Parameters<T>): void {
+    const context = this;
+    const now = Date.now();
 
-  function invokeFunc(time: number) {
-    const args = lastArgs!;
-    const context = lastContext;
+    const later = () => {
+      lastRun = now;
+      timeoutId = undefined;
+      func.apply(context, args);
+    };
 
-    lastArgs = null;
-    lastContext = null;
-    lastCallTime = time;
-
-    result = func.apply(context, args);
-    return result;
-  }
-
-  function shouldInvoke(time: number) {
-    const timeSinceLastCall = time - lastCallTime;
-
-    return lastCallTime === 0 || timeSinceLastCall >= wait;
-  }
-
-  function trailingEdge(time: number) {
-    timeout = null;
-
-    if (trailing && lastArgs) {
-      return invokeFunc(time);
+    if (now - lastRun >= wait) {
+      later();
+    } else if (!timeoutId) {
+      timeoutId = setTimeout(later, wait - (now - lastRun));
     }
-
-    lastArgs = null;
-    lastContext = null;
-    return result;
-  }
-
-  function leadingEdge(time: number) {
-    lastCallTime = time;
-
-    // 오직 leading이 true일 때만 함수를 호출
-    if (leading) {
-      return invokeFunc(time);
-    }
-
-    // leading이 false인 경우, 지연된 실행을 위해 타임아웃 설정
-    // 수정: trailing이 true인 경우에만 타임아웃 설정
-    if (trailing) {
-      timeout = setTimeout(() => trailingEdge(Date.now()), wait);
-    }
-
-    return result;
-  }
-
-  const throttled = function (
-    this: any,
-    ...args: Parameters<T>
-  ): ReturnType<T> | undefined {
-    const time = Date.now();
-    const isInvoking = shouldInvoke(time);
-
-    lastArgs = args;
-    lastContext = this;
-
-    if (isInvoking) {
-      if (timeout === null) {
-        return leadingEdge(time);
-      }
-
-      if (trailing) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => trailingEdge(Date.now()), wait);
-      }
-
-      return leading ? invokeFunc(time) : result;
-    }
-
-    if (timeout === null && trailing) {
-      timeout = setTimeout(
-        () => trailingEdge(Date.now()),
-        wait - (time - lastCallTime)
-      );
-    }
-
-    return result;
   };
-
-  throttled.cancel = function () {
-    if (timeout) {
-      clearTimeout(timeout);
-      timeout = null;
-    }
-
-    lastCallTime = 0;
-    lastArgs = null;
-    lastContext = null;
-  };
-
-  return throttled;
 }

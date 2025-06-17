@@ -24,51 +24,24 @@
  * debounced();
  * debounced.cancel(); // Cancel the pending execution
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number,
-  immediate: boolean = false
-): {
-  (...args: Parameters<T>): ReturnType<T> | undefined;
-  cancel: () => void;
-} {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-  let result: ReturnType<T>;
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-  const debounced = function (
-    this: any,
-    ...args: Parameters<T>
-  ): ReturnType<T> | undefined {
+  return function (this: unknown, ...args: Parameters<T>): void {
     const context = this;
 
-    const later = function () {
-      timeout = null;
-      if (!immediate) {
-        result = func.apply(context, args);
-      }
+    const later = () => {
+      timeoutId = undefined;
+      func.apply(context, args);
     };
 
-    const callNow = immediate && !timeout;
-
-    if (timeout) {
-      clearTimeout(timeout);
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
     }
 
-    timeout = setTimeout(later, wait);
-
-    if (callNow) {
-      result = func.apply(context, args);
-    }
-
-    return result;
+    timeoutId = setTimeout(later, wait);
   };
-
-  debounced.cancel = function () {
-    if (timeout) {
-      clearTimeout(timeout);
-      timeout = null;
-    }
-  };
-
-  return debounced;
 }
