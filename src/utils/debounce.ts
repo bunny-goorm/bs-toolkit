@@ -26,22 +26,49 @@
  */
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
+  wait: number,
+  immediate: boolean = false
+): {
+  (...args: Parameters<T>): ReturnType<T> | undefined;
+  cancel: () => void;
+} {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  let result: ReturnType<T> | undefined;
 
-  return function (this: unknown, ...args: Parameters<T>): void {
+  const debounced = function (
+    this: unknown,
+    ...args: Parameters<T>
+  ): ReturnType<T> | undefined {
     const context = this;
 
     const later = () => {
       timeoutId = undefined;
-      func.apply(context, args);
+      if (!immediate) {
+        result = func.apply(context, args) as ReturnType<T>;
+      }
     };
+
+    const callNow = immediate && !timeoutId;
 
     if (timeoutId !== undefined) {
       clearTimeout(timeoutId);
     }
 
     timeoutId = setTimeout(later, wait);
+
+    if (callNow) {
+      result = func.apply(context, args) as ReturnType<T>;
+    }
+
+    return result;
   };
+
+  debounced.cancel = function () {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+      timeoutId = undefined;
+    }
+  };
+
+  return debounced;
 }

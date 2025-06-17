@@ -32,25 +32,55 @@
  */
 export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
+  wait: number,
+  options: {
+    leading?: boolean;
+    trailing?: boolean;
+  } = {}
+): {
+  (...args: Parameters<T>): ReturnType<T> | undefined;
+  cancel: () => void;
+} {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
   let lastRun = 0;
+  let result: ReturnType<T> | undefined;
 
-  return function (this: unknown, ...args: Parameters<T>): void {
+  const leading = options.leading !== false;
+  const trailing = options.trailing !== false;
+
+  const throttled = function (
+    this: unknown,
+    ...args: Parameters<T>
+  ): ReturnType<T> | undefined {
     const context = this;
     const now = Date.now();
 
     const later = () => {
       lastRun = now;
       timeoutId = undefined;
-      func.apply(context, args);
+      if (trailing) {
+        result = func.apply(context, args) as ReturnType<T>;
+      }
     };
 
-    if (now - lastRun >= wait) {
-      later();
-    } else if (!timeoutId) {
+    const callNow = leading && now - lastRun >= wait;
+
+    if (callNow) {
+      result = func.apply(context, args) as ReturnType<T>;
+      lastRun = now;
+    } else if (!timeoutId && trailing) {
       timeoutId = setTimeout(later, wait - (now - lastRun));
     }
+
+    return result;
   };
+
+  throttled.cancel = function () {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+      timeoutId = undefined;
+    }
+  };
+
+  return throttled;
 }
